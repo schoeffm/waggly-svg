@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+'use strict';
+
+var program  = require('commander');
+var _ = require('lodash');
+var util = require('util');
+var graphviz = require('graphviz');
+var svgTransformer = require('./transformer');
+var fs = require('fs');
+
+
+// svgTransformer.parseString('')
+svgTransformer.transformFile('../mainUi.svg', function(transformed) {
+    console.log();
+    fs.writeFile('../output.svg', transformed, function (err) {
+        if (err) return console.log(err);
+        console.log('Hello World > helloworld.txt');
+    });
+});
+
+
+
+
+/*
+program
+    .version('0.0.1')
+    .option('-p, --png', "Export to PNG")
+    .option('-w, --waggly', "Turns on the waggly-mode")
+    .parse(process.argv);
+
+// console.log(process.argv.slice(2).length);
+if (!process.argv.slice(2).length) {
+	console.log('No command specified. See \'wagglyuml --help\':');
+	program.outputHelp();
+	process.exit(1);
+}
+console.log("That's your input: " + _.last(process.argv));
+*/
+
+
+
+
+
+/*
+// Create digraph G
+var g = graphviz.digraph("G");
+
+// Add node (ID: Hello)
+var n1 = g.addNode( "Hello", {"color" : "blue"} );
+n1.set( "style", "filled" );
+
+// Add node (ID: World)
+g.addNode( "World" );
+
+// Add edge between the two nodes
+var e = g.addEdge( n1, "World" );
+e.set( "color", "red" );
+
+// Print the dot script
+console.log( g.to_dot() );
+
+// Set GraphViz path (if not in your path)
+g.setGraphVizPath( "/usr/local/bin" );
+// Generate a PNG output
+g.output( "png", "test01.png" );
+*/

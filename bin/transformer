@@ -1,0 +1,104 @@
+'use strict';
+var _ = require('lodash');
+var util = require('./util');
+var xmlParser = require('node-xml');
+
+var callback;
+
+var toNamespaces = function(namespaces) {
+    return _.reduce(namespaces, function(a, ns) {
+        return a += ((_.isEmpty(ns[0])) ? " xmlns" : " xmlns:" + ns[0]) + "=\"" + ns[1] + "\"";
+    }, "");
+};
+
+var toAttributes = function(attrs) {
+    return _.reduce(attrs, function(a, at) {return a += " " + at[0] + "=\"" + at[1] + "\"";}, "");
+};
+
+var toAttributesExcept = function(attrs, exception) {
+    return toAttributes(_.filter(attrs, function(element) { return element[0] !== exception; }));
+};
+
+var getAttributeValue = function(attrs, needle) {
+    var foundElement = _.find(attrs, function(element) { return element[0] === needle });
+    return (foundElement) ? foundElement[1] : undefined;
+};
+
+var transformPolyline = function(elem, attrs, prefix, namespaces) {
+    return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
+        elem +
+        toNamespaces(namespaces) +
+        toAttributesExcept(attrs, 'points') +
+        "points=\"" +
+        util.processPolygonAsString(getAttributeValue(attrs, 'points')) +
+        "\" >";
+};
+
+var transformPath = function(elem, attrs, prefix, namespaces) {
+    var path = getAttributeValue(attrs, 'd');
+    if (util.isStraightLine(path)) {
+        var cleared = _.trim(path.replace('M',' ').replace('C',' '));
+        var points = util.stringToPoints(cleared);
+        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
+            "polyline" +
+            toNamespaces(namespaces) +
+            toAttributesExcept(attrs, 'd') +
+            "points=\"" +
+            util.pointsToString(util.processPolygon(points)) +
+            "\" >";
+    } else {
+        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
+            elem +
+            toNamespaces(namespaces) +
+            toAttributes(attrs) +
+            " >";
+    }
+};
+
+var parser = new xmlParser.SaxParser(function(cb) {
+    var indent = 0;
+    var svgOutput;
+    var changeClosingTagTo = '';
+
+    cb.onStartDocument(function() { svgOutput = ""; });
+    cb.onEndDocument(function() { callback(svgOutput); });
+
+    cb.onStartElementNS(function(elem, attrs, prefix, uri, namespaces) {
+        indent += 2;
+
+        if (elem.toLowerCase() === 'polyline' || elem.toLowerCase() === 'polygon' ) {
+            svgOutput += transformPolyline(elem, attrs, prefix, namespaces);
+        } else if (elem.toLowerCase() === 'path' ) {
+            var result = transformPath(elem, attrs, prefix, namespaces);
+            if (result.indexOf(elem) < 0) { changeClosingTagTo = 'polyline'; }
+            svgOutput += result;
+        } else {
+            svgOutput += _.repeat(' ', indent) + "<" + (_.isEmpty(prefix) ? '' : prefix + ":") + elem + toNamespaces(namespaces) + toAttributes(attrs) + ">";
+        }
+    });
+    cb.onEndElementNS(function(elem, prefix, uri) {
+        svgOutput += _.repeat(' ', indent) +
+            "</" +
+            (_.isEmpty(prefix) ? '' : prefix + ":") +
+            ((_.isEmpty(changeClosingTagTo)) ? elem : changeClosingTagTo) +
+            ">";
+        changeClosingTagTo = '';
+        indent -= 2;
+    });
+    cb.onCharacters(function(chars) {
+        if (!_.isEmpty(_.trim(chars))) {
+            svgOutput += _.trim(util.escape(chars));
+        }
+    });
+});
+
+
+
+module.exports.transformFile = function(file, cb) {
+    callback = cb;
+    parser.parseFile(file);
+};
+module.exports.transformString = function(string, cb) {
+    callback = cb;
+    parser.parseString(string);
+};
