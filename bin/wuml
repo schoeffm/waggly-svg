@@ -3,42 +3,52 @@
 
 var program  = require('commander');
 var _ = require('lodash');
-var util = require('util');
 var graphviz = require('graphviz');
 var svgTransformer = require('./transformer');
 var fs = require('fs');
 
 
-// svgTransformer.parseString('')
-svgTransformer.transformFile('../mainUi.svg', function(transformed) {
-    console.log();
-    fs.writeFile('../output.svg', transformed, function (err) {
-        if (err) return console.log(err);
-        console.log('Hello World > helloworld.txt');
-    });
-});
-
-
-
-
-/*
 program
     .version('0.0.1')
     .option('-p, --png', "Export to PNG")
+    .option('-c, --content <content>', "SVG-content as string input")
+    .option('-i, --input <path>', "Input SVG-File which should be turned into a waggly output-version")
+    .option('-o, --output <path>', "Output filename")
     .option('-w, --waggly', "Turns on the waggly-mode")
+    .option('--wagInterval <interval>', "Interval for our wags (default is 10)", parseInt)
+    .option('--wagSize <interval>', "Size for the wags (default is 1.5)", parseFloat)
     .parse(process.argv);
 
-// console.log(process.argv.slice(2).length);
 if (!process.argv.slice(2).length) {
 	console.log('No command specified. See \'wagglyuml --help\':');
 	program.outputHelp();
 	process.exit(1);
 }
-console.log("That's your input: " + _.last(process.argv));
-*/
 
+// console.log("That's your input: " + _.last(process.argv));
 
+var outputName = program.output;
 
+var transformer = svgTransformer.create(
+    {
+        waggly: program.waggly,
+        wobble_interval: program.wagInterval || 10,
+        wobble_size: program.wagSize || 1.5
+    },
+    function(transformed) {
+        fs.writeFile(outputName, transformed, function (err) {
+            if (err) return console.log(err);
+        });
+    }
+);
+
+if (program.input) {
+    if (! outputName) { outputName = program.input.replace('svg', 'out.svg'); }
+    transformer.transformFile(program.input);
+} else if (program.content)  {
+    if (! outputName) { outputName = new Date().getTime(); }
+    transformer.transformString(program.input);
+}
 
 
 /*

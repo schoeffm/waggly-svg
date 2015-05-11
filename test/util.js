@@ -43,11 +43,6 @@ describe("'util' represents a host-module of all kinds of helper-methods", funct
         });
     });
 
-    describe('isStraightLine', function() {
-        it('should extract points from a string', function () {
-            assert(util.isStraightLine("M93.9697,-45C114.432,-45 137.592,-45 156.47,-45"));
-        });
-    });
     describe('isStraightLine2', function() {
         it('should recognize a vertical line', function () {
             assert(util.isStraightLine2("M93.9697,-45C114.432,-45 137.592,-45 156.47,-45"));

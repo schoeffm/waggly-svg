@@ -4,17 +4,6 @@ var _ = require('lodash');
 var WOBBLE_INTERVAL = 10.0;
 var WOBBLE_SIZE = 1.5;
 
-var escape = function(inputToBeEscaped) {
-    return inputToBeEscaped
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/</g, '&lt;')
-        .replace(/\r/g, '')
-        .replace(/\n/g, '')
-        .replace(/>/g, '&gt;');
-};
-
 var pointsToString = function(points) {
     return _.trim(_.map(points, function(p) { return p.x + "," + p.y + " "}));
 };
@@ -73,18 +62,6 @@ var processPolygon = function(polygon) {
         prev = nextPoint;
     }
     return processedPolygon;
-};
-
-var isStraightLine = function(pointsAsString) {
-    var clearedString = _.trim(pointsAsString.replace('M',' ').replace('C',' '));
-    var points = stringToPoints(clearedString);
-
-    var x = points[0].x;
-    var y = points[0].y;
-    var sameX = _.every(points, function(point) { return point.x === x });
-    var sameY = _.every(points, function(point) { return point.y === y });
-
-    return sameX || sameY;
 };
 
 /**
