@@ -1,0 +1,109 @@
+<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" height="99pt" viewBox="0.00 0.00 566.00 99.00" width="566pt">
+    <ns0:defs>
+        <ns0:filter id="filterBlur">
+            <ns0:feGaussianBlur id="feGaussianBlurBlur" stdDeviation="0.69"/>
+        </ns0:filter>
+        <ns0:linearGradient id="white" x1="0%" x2="100%" xy="0%" y2="100%">
+            <ns0:stop offset="0%" style="stop-color:white;stop-opacity:1"/>
+            <ns0:stop offset="50%" style="stop-color:white;stop-opacity:1"/>
+        </ns0:linearGradient>
+    </ns0:defs>
+    <ns0:g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 95)">
+        <ns0:title>G</ns0:title>
+        <ns0:polygon fill="white"
+                     points="-4.000000,4.000000 -4.009375,-26.179167 -4.000000,-95.000000 185.055208,-94.988542 562.000000,-95.000000 562.009375,-44.223958 562.000000,4.000000 512.812500,4.006250 -4.000000,4.000000"
+                     stroke="none" style="fill:url(#white);"/>
+
+        <ns0:g class="node" id="node1">
+            <ns0:title>A0</ns0:title>
+            <ns0:polygon fill="white"
+                         points="0.500000,-10.500000 0.519792,-68.184375 0.500000,-79.500000 46.268750,-79.505208 83.500000,-79.500000 83.488542,-20.397917 83.500000,-10.500000 64.827083,-10.515625 0.500000,-10.500000"
+                         stroke="black" style="fill:url(#white);"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="42" y="-67.5">ICustomer</ns0:text>
+            <ns0:polyline fill="none" points="0.500000,-60.500000 79.702083,-60.489583 83.500000,-60.500000"
+                          stroke="black"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="42" y="-48.5">+name</ns0:text>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="42" y="-37.5">+email</ns0:text>
+            <ns0:polyline fill="none" points="0.500000,-30.500000 74.815625,-30.514583 83.500000,-30.500000"
+                          stroke="black"/>
+        </ns0:g>
+
+        <ns0:g class="node" id="node2">
+            <ns0:title>A1</ns0:title>
+            <ns0:polygon fill="white"
+                         points="156.500000,-27.000000 156.509375,-46.060417 156.500000,-63.000000 196.422917,-62.992708 233.500000,-63.000000 233.515625,-39.563542 233.500000,-27.000000 216.742708,-26.987500 156.500000,-27.000000"
+                         stroke="black" style="fill:url(#white);"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="195" y="-42.5">Customer</ns0:text>
+        </ns0:g>
+
+        <ns0:g class="edge" id="edge1">
+            <ns0:title>A0-&gt;A1</ns0:title>
+            <ns0:path d="M93.9697,-45C114.432,-45 137.592,-45 156.47,-45" fill="none" stroke="black"
+                      stroke-dasharray="5,2"/>
+            <ns0:polygon fill="white"
+                         points="93.862800,-41.500100 92.883204,-41.827167 83.862800,-45.000000 84.976405,-45.397225 93.862700,-48.500100 93.882499,-48.005308 93.862800,-41.500100"
+                         stroke="black" style="fill:url(#white);"/>
+        </ns0:g>
+
+        <ns0:g class="node" id="node3">
+            <ns0:title>A2</ns0:title>
+            <ns0:polygon fill="white"
+                         points="306.500000,-27.000000 306.516667,-27.704167 306.500000,-63.000000 352.512500,-62.980208 365.500000,-63.000000 365.513542,-27.215625 365.500000,-27.000000 362.404167,-27.012500 306.500000,-27.000000"
+                         stroke="black" style="fill:url(#white);"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="336" y="-42.5">Order</ns0:text>
+        </ns0:g>
+
+        <ns0:g class="edge" id="edge2">
+            <ns0:title>A1-&gt;A2</ns0:title>
+            <ns0:path d="M245.84,-45C262.291,-45 280.343,-45 295.875,-45" fill="none" stroke="black"/>
+            <ns0:polygon fill="white"
+                         points="245.615000,-45.000100 244.011541,-46.073560 239.615000,-49.000000 239.151281,-48.717937 233.615000,-45.000000 236.815118,-42.856519 239.615000,-41.000000 242.094672,-42.663225 245.615000,-45.000100"
+                         stroke="black" style="fill:url(#white);"/>
+            <ns0:polygon fill="black"
+                         points="306.175000,-45.000000 303.312691,-46.286609 296.175000,-49.500100 296.834260,-48.884461 301.175000,-45.000000 299.680208,-44.987530 296.175000,-45.000100 296.175000,-45.000100 296.175000,-45.000100 296.958333,-44.981335 301.175000,-45.000000 298.129152,-42.228069 296.175000,-40.500100 297.003175,-40.873239 306.175000,-45.000000 306.175000,-45.000000"
+                         stroke="black"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="288.049" y="-50.9524">orders*
+            </ns0:text>
+        </ns0:g>
+
+        <ns0:g class="node" id="node4">
+            <ns0:title>A3</ns0:title>
+            <ns0:polygon fill="white"
+                         points="460.000000,-55.000000 460.007292,-63.855208 460.000000,-91.000000 519.998958,-91.006250 536.000000,-91.000000 535.986458,-86.087500 536.000000,-55.000000 512.246875,-54.989583 460.000000,-55.000000"
+                         stroke="black" style="fill:url(#white);"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="498" y="-70.5">LineItem</ns0:text>
+        </ns0:g>
+
+        <ns0:g class="edge" id="edge3">
+            <ns0:title>A2-&gt;A3</ns0:title>
+            <ns0:path d="M377.761,-52.1332C399.799,-55.9899 427.118,-60.7706 450.044,-64.7826" fill="none"
+                      stroke="black"/>
+            <ns0:polygon fill="black"
+                         points="377.425000,-52.074500 371.575641,-54.643773 370.825000,-54.980300 366.097835,-50.454917 365.605000,-50.005800 365.777028,-49.921059 372.205000,-47.100000 376.854213,-51.499993 377.425000,-52.074500"
+                         stroke="black"/>
+            <ns0:polygon fill="black"
+                         points="459.902000,-66.507800 451.772231,-68.560102 449.276000,-69.216500 454.638999,-65.878145 454.976000,-65.645800 453.240677,-65.355261 450.051000,-64.783900 450.051000,-64.783900 450.051000,-64.783900 452.163839,-65.133085 454.976000,-65.645800 453.995417,-64.397574 450.827000,-60.351300 459.699000,-66.374476 459.902000,-66.507800 459.902000,-66.507800"
+                         stroke="black"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="440.59" y="-69.209">0..*</ns0:text>
+        </ns0:g>
+
+        <ns0:g class="node" id="node5">
+            <ns0:title>A4</ns0:title>
+            <ns0:polygon fill="white"
+                         points="551.500000,-36.000000 442.575000,-36.017708 438.500000,-36.000000 438.507292,-14.658333 438.500000,-0.000000 547.073958,-0.018750 557.500000,-0.000000 557.512500,-23.882292 557.500000,-30.000000 553.219027,-34.276806 551.500000,-36.000000"
+                         stroke="black" style="fill:url(#white);"/>
+            <ns0:polyline fill="none" points="551.500000,-36.000000 551.519792,-30.611458 551.500000,-30.000000"
+                          stroke="black"/>
+            <ns0:polyline fill="none" points="557.500000,-30.000000 554.257292,-29.992708 551.500000,-30.000000"
+                          stroke="black"/>
+            <ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="498" y="-15.5">Aggregate+root.
+            </ns0:text>
+        </ns0:g>
+
+        <ns0:g class="edge" id="edge4">
+            <ns0:title>A2-&gt;A4</ns0:title>
+            <ns0:path d="M365.605,-40.1729C385.829,-36.7601 413.653,-32.0648 438.492,-27.8733" fill="none"
+                      stroke="black" stroke-dasharray="5,2"/>
+        </ns0:g>
+    </ns0:g>
+</ns0:svg>

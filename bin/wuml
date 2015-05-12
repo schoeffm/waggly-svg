@@ -4,7 +4,7 @@
 var program  = require('commander');
 var _ = require('lodash');
 var graphviz = require('graphviz');
-var svgTransformer = require('./transformer');
+var wagglySvg = require('./waggly-svg');
 var fs = require('fs');
 
 
@@ -28,8 +28,7 @@ if (!process.argv.slice(2).length) {
 // console.log("That's your input: " + _.last(process.argv));
 
 var outputName = program.output;
-
-var transformer = svgTransformer.create(
+var svgTransformer = wagglySvg.create(
     {
         waggly: program.waggly,
         wobble_interval: program.wagInterval || 10,
@@ -44,33 +43,8 @@ var transformer = svgTransformer.create(
 
 if (program.input) {
     if (! outputName) { outputName = program.input.replace('svg', 'out.svg'); }
-    transformer.transformFile(program.input);
+    svgTransformer.transformFile(program.input);
 } else if (program.content)  {
     if (! outputName) { outputName = new Date().getTime(); }
-    transformer.transformString(program.input);
+    svgTransformer.transformString(program.input);
 }
-
-
-/*
-// Create digraph G
-var g = graphviz.digraph("G");
-
-// Add node (ID: Hello)
-var n1 = g.addNode( "Hello", {"color" : "blue"} );
-n1.set( "style", "filled" );
-
-// Add node (ID: World)
-g.addNode( "World" );
-
-// Add edge between the two nodes
-var e = g.addEdge( n1, "World" );
-e.set( "color", "red" );
-
-// Print the dot script
-console.log( g.to_dot() );
-
-// Set GraphViz path (if not in your path)
-g.setGraphVizPath( "/usr/local/bin" );
-// Generate a PNG output
-g.output( "png", "test01.png" );
-*/
