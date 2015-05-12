@@ -1,4 +1,4 @@
-wuml
+wsvg
 =============
 
 # Description
@@ -7,13 +7,13 @@ A commander CLI app
 
 # Usage
 
-To install wuml from npm, run:
+To install wsvg from npm, run:
 
 ```
-$ npm install -g wuml
+$ npm install -g wsvg
 ```
 
-```node ./bin/wuml --help```
+```node ./bin/wsvg --help```
 
 # Prerequisites
 

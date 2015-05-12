@@ -14,7 +14,7 @@ program
     .option('-c, --content <content>', "SVG-content as string input")
     .option('-i, --input <path>', "Input SVG-File which should be turned into a waggly output-version")
     .option('-o, --output <path>', "Output filename")
-    .option('-w, --waggly', "Turns on the waggly-mode")
+    .option('-w, --waggly', "Turns on the waggly-mode (without it won't change anything)")
     .option('--wagInterval <interval>', "Interval for our wags (default is 10)", parseInt)
     .option('--wagSize <interval>', "Size for the wags (default is 1.5)", parseFloat)
     .parse(process.argv);

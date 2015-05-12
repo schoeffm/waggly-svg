@@ -1,10 +1,10 @@
 {
   "name": "wagglyuml",
   "version": "0.0.1",
-  "description": "A commander CLI app",
+  "description": "A CLI tool in order to turn SVG input files into waggly counterparts",
   "private": true,
   "bin": {
-    "wagglyuml": "./bin/wuml"
+    "wagglyuml": "./bin/wsvg"
   },
   "scripts": {
     "test": "mocha -R spec"
@@ -16,10 +16,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/schoeffm/wagglyuml"
+    "url": "https://github.com/schoeffm/waggly-svg"
   },
   "license": "MIT",
-  "bugs": "https://github.com/schoeffm/wagglyuml/issues",
+  "bugs": "https://github.com/schoeffm/waggly-svg/issues",
   "dependencies": {
     "autocmdr": "~0.0.4",
     "commander": "~2.0.0",
