@@ -20,8 +20,6 @@ $ npm install -g wsvg
 - rsvg-convert
 - graphviz
 
-# Installation
-
 # License
 
 Copyright (c) 2015 Stefan Schöffmann
