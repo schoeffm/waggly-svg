@@ -23,7 +23,7 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
             transformer.transformString(testPolyline);
         });
 
-        it('should create a pass-through object that returns the input-file unchanged', function(done) {
+        it.skip('should create a pass-through object that returns the input-file unchanged', function(done) {
             var inputFile = './input.svg';
             var transformer = wagglySvg.create({ waggly: false }, function(result) {
                 assert.strictEqual(
