@@ -83,8 +83,8 @@ The module exposes one factory-method which returns the actual transformer based
 ```
 {
     waggly: true,			// activates the waggly-mode
-    wobble_interval: 30,	// configures the distance of the wags
-    wobble_size: 1.5,       // ... and the size of 'em
+    wag_interval: 30,	// configures the distance of the wags
+    wag_size: 1.5,       // ... and the size of 'em
     font_family: 'Menlo',   // font-family
     font_size: 12           // font-size
 }
