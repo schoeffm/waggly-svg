@@ -1,8 +1,8 @@
 {
-  "name": "wagglyuml",
-  "version": "0.0.1",
-  "description": "A CLI tool in order to turn SVG input files into waggly counterparts",
-  "private": true,
+  "name": "wsvg",
+  "version": "0.0.2",
+  "description": "A CLI tool in order to turn SVG input files into hand-drawn looking counterparts",
+  "private": false,
   "bin": {
     "wagglyuml": "./bin/wsvg"
   },
@@ -21,12 +21,10 @@
   "license": "MIT",
   "bugs": "https://github.com/schoeffm/waggly-svg/issues",
   "dependencies": {
-    "autocmdr": "~0.0.4",
     "commander": "~2.0.0",
     "graphviz": "0.0.8",
     "lodash": "^3.8.0",
-    "node-xml": "^1.0.2",
-    "xml": "^1.0.0"
+    "node-xml": "^1.0.2"
   },
   "devDependencies": {
     "mocha": "^2.2.4"
