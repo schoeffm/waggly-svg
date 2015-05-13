@@ -39,6 +39,8 @@ $ wsvg --help
     -i, --input <path>        Input SVG-File which should be turned into a waggly output-version
     -o, --output <path>       Output filename
     -w, --waggly              Turns on the waggly-mode (without, it won't change anything)
+    --fontFamily <font>       Set the output font-family (i.e. Purisa - ttf-tlwg)
+    --fontSize <size>         Set the size of the font to be used
     --wagInterval <interval>  Interval for our wags (default is 10)
     --wagSize <interval>      Size for the wags (default is 1.5)
 ```
@@ -60,8 +62,10 @@ var wagglySvg = require('./waggly-svg');
 
 var config = {
     waggly: true,
-    wobble_interval: 10,
-    wobble_size: 1.5
+    wag_interval: 10,
+    wag_size: 1.5,
+    font_family: 'Menlo',
+    font_size: 12
 };
 
 var svgTransformer = wagglySvg.create(config, function(transformed) {
@@ -80,23 +84,24 @@ The module exposes one factory-method which returns the actual transformer based
 {
     waggly: true,			// activates the waggly-mode
     wobble_interval: 30,	// configures the distance of the wags
-    wobble_size: 1.5		// ... and the size of 'em
+    wobble_size: 1.5,       // ... and the size of 'em
+    font_family: 'Menlo',   // font-family
+    font_size: 12           // font-size
 }
 ```
 
 The callback-function gets the transformed svg-output as parameter for further processing.
 
 #### Transformer
+
 `svgTransformer.transformFile(pathToFile)`: Starts the transformation by reading the file-input and turning it into a hand-drawn version.
 
 `svgTransformer.transformString(stringInput)`: Starts the transformation based on the given input.
 
 # Prerequisites
 
-Currently none.
-
-<!-- 
-- rsvg-convert
+- rsvg-convert (i.e. `brew install librsvg`) is used to convert svg-graphics to png
+<!--
 - graphviz
 -->
 
