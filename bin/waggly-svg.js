@@ -38,6 +38,23 @@ var WagglyTransformer = function(config, callback) {
             "\" >";
     };
 
+    var transformRectangle = function(elem, attrs, prefix, namespaces) {
+        var x = parseFloat(getAttributeValue(attrs, 'x'));
+        var y = parseFloat(getAttributeValue(attrs, 'y'));
+        var width = parseFloat(getAttributeValue(attrs, 'width'));
+        var height = parseFloat(getAttributeValue(attrs, 'height'));
+
+        var points = [{x:x, y:y},{x:x+width,y:y},{x:x+width,y:y+height},{x:x,y:y+height}];
+        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
+            "polygon" +
+            toNamespaces(namespaces) +
+            toAttributesExcept(attrs, 'd') +
+            " points=\"" +
+            util.pointsToString(util.processPolygon(points, self.config)) +
+            "\" >";
+
+    };
+
     var transformPath = function(elem, attrs, prefix, namespaces) {
         var path = getAttributeValue(attrs, 'd');
         if (util.isStraightLine(path)) {
@@ -70,6 +87,10 @@ var WagglyTransformer = function(config, callback) {
 
             if (elem.toLowerCase() === 'polyline' || elem.toLowerCase() === 'polygon' ) {
                 svgOutput += transformPolyline(elem, attrs, prefix, namespaces);
+            } else if (elem.toLocaleString() === 'rect') {
+                var result = transformRectangle(elem, attrs, prefix, namespaces);
+                if (result.indexOf(elem) < 0) { changeClosingTagTo = 'polygon'; }
+                svgOutput += result;
             } else if (elem.toLowerCase() === 'path' ) {
                 var result = transformPath(elem, attrs, prefix, namespaces);
                 if (result.indexOf(elem) < 0) { changeClosingTagTo = 'polyline'; }

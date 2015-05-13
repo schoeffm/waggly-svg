@@ -62,13 +62,24 @@ var processPolygonAsString = function(polygon, config) {
 var stringToPoints = function(pointsAsString) {
     if (_.isUndefined(pointsAsString) || _.isEmpty(pointsAsString)) return [];
 
-    var points = pointsAsString.split(" ");
-    return _.map(points, function(char) {
-        return {
-            x: parseFloat(char.split(",")[0]),
-            y: parseFloat(char.split(",")[1])
-        };
-    });
+    var input = pointsAsString;
+
+    if (input.indexOf(',') >= 0) {
+        // some SVG's don't separate their point-coordinates with ','
+        // For those that do we have to remove 'em
+        input = input.replace(/,/g,' ')
+    }
+
+    var points = _.trim(input.replace(/[A-Za-z]/g,' ')).split(/\s+/);
+
+    var result = [];
+    for (var i = 0; i < points.length; i=i+2) {
+        result.push({
+            x: parseFloat(points[i]),
+            y: parseFloat(points[i+1])
+        })
+    }
+    return result;
 };
 
 /**
@@ -78,8 +89,7 @@ var stringToPoints = function(pointsAsString) {
  * @returns {boolean}
  */
 var isStraightLine = function(pointsAsString) {
-    var clearedString = _.trim(pointsAsString.replace('M',' ').replace('C',' '));
-    var points = stringToPoints(clearedString);
+    var points = stringToPoints(pointsAsString);
     var start = points[0];
     var end = points[points.length - 1];
     var pointsBetween = _.dropRight(_.drop(points));

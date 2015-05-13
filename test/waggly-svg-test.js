@@ -13,6 +13,7 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
     var testPolyline = '<ns0:polyline fill="none" points="0.500000,-60.500000 79.702083,-60.489583 83.500000,-60.500000" stroke="black"/>';
     var testPathStraightHorizontal = '<ns0:path d="M245.84,-45C262.291,-45 280.343,-45 295.875,-45" fill="none" stroke="black"/>';
     var testPathStraightDiagonal = '<ns0:path d="M245.84,-45C262.291,-45 280.343,-45 295.875,-45" fill="none" stroke="black"/>';
+    var testRectangle = '<rect fill="none" stroke="#000000" stroke-opacity="1" stroke-width="1" x="366.47" y="-1002.365" width="135.06" height="36.296" rx="0.506" ry="0.506"/>';
 
     describe('When wagging is turned off, it', function() {
         it('should create a pass-through object that returns the input-string unchanged', function(done) {
@@ -80,6 +81,17 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
                 done();
             });
             transformer.transformString(testPathStraightDiagonal);
+        });
+
+        it('should change a rectangle into a waggling polygon', function(done) {
+            var transformer = wagglySvg.create(config, function(result) {
+                assert.notStrictEqual(result, testRectangle);
+                assert(result.indexOf('polygon') >= 0);
+                assert(result.indexOf('rect') < 0);
+                assert.strictEqual(result.split(' ').length, 42);
+                done();
+            });
+            transformer.transformString(testRectangle);
         });
 
         it('should turn a polygon into a waggling polygon', function(done) {
