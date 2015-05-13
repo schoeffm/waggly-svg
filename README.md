@@ -100,7 +100,7 @@ The callback-function gets the transformed svg-output as parameter for further p
 
 # Prerequisites
 
-- rsvg-convert (i.e. `brew install librsvg`) is used to convert svg-graphics to png
+- rsvg-convert (i.e. `brew install librsvg`, `suo apt-get install librsvg2-dev` or `sudo yum install librsvg2-devel`) is used to convert svg-graphics to png
 
 <!--
 graphviz
