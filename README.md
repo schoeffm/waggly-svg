@@ -9,8 +9,7 @@ wsvg
 
 So for example it will turn the left input into the right output:
 
-![Example](https://github.com/schoeffm/waggly-svg/blob/master/doc/normal.png)
-![Example](https://github.com/schoeffm/waggly-svg/blob/master/doc/scruffy.png)
+![Example](https://github.com/schoeffm/waggly-svg/blob/master/doc/example.png)
 
 # Usage
 
