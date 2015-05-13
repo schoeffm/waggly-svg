@@ -19,13 +19,28 @@ var WagglyTransformer = function(config, callback) {
         return _.reduce(attrs, function(a, at) {return a += " " + at[0] + "=\"" + at[1] + "\"";}, "");
     };
 
+    /**
+     * @param attrs
+     * @param exception ...
+     */
     var toAttributesExcept = function(attrs, exception) {
-        return toAttributes(_.filter(attrs, function(element) { return element[0] !== exception; }));
+        var exceptions = _.drop(arguments);
+        return toAttributes(_.filter(attrs, function(element) { return ! _.includes(exceptions, element[0]); }));
     };
 
     var getAttributeValue = function(attrs, needle) {
         var foundElement = _.find(attrs, function(element) { return element[0] === needle });
         return (foundElement) ? foundElement[1] : undefined;
+    };
+
+    var transformText = function(elem, attrs, prefix, namespaces) {
+        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
+            elem +
+            toNamespaces(namespaces) +
+            toAttributesExcept(attrs, 'font-family', 'font-size') +
+            " font-family=\"" + self.config.font_family + "\" font-size=\"" +
+            ((self.config.font_size) ? self.config.font_size : "10") +
+            "\" >";
     };
 
     var transformPolyline = function(elem, attrs, prefix, namespaces) {
@@ -93,8 +108,12 @@ var WagglyTransformer = function(config, callback) {
                 svgOutput += result;
             } else if (elem.toLowerCase() === 'path' ) {
                 var result = transformPath(elem, attrs, prefix, namespaces);
-                if (result.indexOf(elem) < 0) { changeClosingTagTo = 'polyline'; }
+                if (result.indexOf(elem) < 0) {
+                    changeClosingTagTo = 'polyline';
+                }
                 svgOutput += result;
+            } else if (elem.toLowerCase() === 'text' && self.config.font_family !== undefined)  {
+                svgOutput += transformText(elem, attrs, prefix, namespaces);
             } else {
                 svgOutput +="<" + (_.isEmpty(prefix) ? '' : prefix + ":") + elem + toNamespaces(namespaces) + toAttributes(attrs) + ">";
             }
@@ -142,8 +161,10 @@ function EmptyTransformer(callback) {
 /**
  * {
  *   waggly: [true|false],
- *   wobble_interval: 10,
- *   wobble_size: 1.5
+ *   wag_interval: 10,
+ *   wag_size: 1.5,
+ *   font_family: 'Purisa',
+ *   font_size: 20
  *  }
  *
  * @param options { waggly: true|false }
@@ -154,8 +175,10 @@ module.exports.create = function(options, cb) {
     if (options.waggly) {
         return new WagglyTransformer({
             waggly: options.waggly || true,
-            wobble_interval: options.wobble_interval || 10,
-            wobble_size: options.wobble_size || 1.5
+            wag_interval: options.wag_interval || 10,
+            wag_size: options.wag_size || 1.5,
+            font_family: options.font_family || undefined,
+            font_size: options.font_size || undefined
         }, cb);
     } else {
         return new EmptyTransformer(cb);

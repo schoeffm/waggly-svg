@@ -9,8 +9,8 @@ var distanceBetween = function(pointOne, pointTwo) {
 };
 
 var processPolygon = function(polygon, config) {
-    var interval = config.wobble_interval || 10;
-    var size = config.wobble_size || 1.5;
+    var interval = config.wag_interval || 10;
+    var size = config.wag_size || 1.5;
 
     var _perturb = function(x, y) {
         return {

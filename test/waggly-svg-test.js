@@ -39,8 +39,8 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
     describe('When wagging is turned on, it', function() {
         var config = {
             waggly: true,
-            wobble_interval: 10,
-            wobble_size: 1.5
+            wag_interval: 10,
+            wag_size: 1.5
         };
 
         it('should turn a polyline into a waggling polyline even without config', function(done) {
@@ -107,8 +107,8 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
         it('should produce less intermediate points when using a bigger interval (but still waggly)', function(done) {
             var config = {
                 waggly: true,
-                wobble_interval: 30,
-                wobble_size: 1.5
+                wag_interval: 30,
+                wag_size: 1.5
             };
             var transformer = wagglySvg.create(config, function(result) {
                 assert.notStrictEqual(result, testPolyline);

@@ -15,6 +15,8 @@ program
     .option('-i, --input <path>', "Input SVG-File which should be turned into a waggly output-version")
     .option('-o, --output <path>', "Output filename")
     .option('-w, --waggly', "Turns on the waggly-mode (without, it won't change anything)")
+    .option('--fontFamily <font>', "Set the output font-family (i.e. Purisa - ttf-tlwg)")
+    .option('--fontSize <size>', "Set the size of the font to be used")
     .option('--wagInterval <interval>', "Interval for your wags (default is 10)", parseInt)
     .option('--wagSize <interval>', "Size for the wags (default is 1.5)", parseFloat)
     .parse(process.argv);
@@ -31,8 +33,10 @@ var outputName = program.output;
 var svgTransformer = wagglySvg.create(
     {
         waggly: program.waggly,
-        wobble_interval: program.wagInterval || 10,
-        wobble_size: program.wagSize || 1.5
+        wag_interval: program.wagInterval || 10,
+        wag_size: program.wagSize || 1.5,
+        font_family: program.fontFamily || undefined,
+        font_size: program.fontSize || undefined
     },
     function(transformed) {
         fs.writeFile(outputName, transformed, function (err) {
