@@ -101,8 +101,9 @@ The callback-function gets the transformed svg-output as parameter for further p
 # Prerequisites
 
 - rsvg-convert (i.e. `brew install librsvg`) is used to convert svg-graphics to png
+
 <!--
-- graphviz
+graphviz
 -->
 
 
