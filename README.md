@@ -9,7 +9,7 @@ wsvg
 
 So for example it will turn the left input into the right output:
 
-![Alt text](doc/example.png =550x)
+![Example](https://github.com/schoeffm/waggly-svg/blob/master/doc/example.png)
 
 # Usage
 
