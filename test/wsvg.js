@@ -4,7 +4,7 @@ var assert = require("assert");
 var exec = require('child_process').exec;
 var path = require('path');
 
-describe('wuml bin', function(){
+describe('wsvg bin', function(){
 	var cmd = 'node '+path.join(__dirname, '../bin/wsvg')+' ';
 	console.log(cmd);
 
