@@ -52,11 +52,17 @@ var processPolygon = function(polygon, config) {
 };
 
 var pointsToString = function(points) {
-    return _.trim(_.map(points, function(p) { return p.x + "," + p.y + " "}));
+    if (points === undefined) return "";
+    return _.trim(
+            _.reduce(
+                _.map(points, function(p) {return p.x + "," + p.y }), 
+                function(acc, elem) { return acc += " " + elem }, 
+                "")
+    );
 };
 
 var processPolygonAsString = function(polygon, config) {
-    return pointsToString( processPolygon(stringToPoints(polygon), config));
+    return pointsToString(processPolygon(stringToPoints(polygon), config));
 };
 
 var stringToPoints = function(pointsAsString) {

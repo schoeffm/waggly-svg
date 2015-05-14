@@ -1,6 +1,6 @@
 {
   "name": "wsvg",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A CLI tool in order to turn SVG input files into hand-drawn looking counterparts",
   "private": false,
   "bin": {

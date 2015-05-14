@@ -34,22 +34,41 @@ describe("'waggly-utils' contain a bunch of helper-methods needed for internal c
             assert(util.processPolygon([{x:0,y:0},{x:20,y:0}], config).length === 3);
         });
     });
-
+    
+    describe('pointsToString', function() {
+        it('should turn an array of points back to a string-representation', function() {
+            assert.deepEqual(util.pointsToString([{x:45,y:54.3},{x:23,y:43}]), "45,54.3 23,43");
+        });
+        it('should turn an empty array of points to an empty string', function() {
+            assert.deepEqual(util.pointsToString([]), "");
+        });
+        it('should turn undefined to an empty string', function() {
+            assert.deepEqual(util.pointsToString(undefined), "");
+        });
+    });
+    
     describe('stringToPoints', function() {
         it('should extract all values and return an object-array', function () {
-            assert.deepEqual([{x:45,y:54.3},{x:23,y:43}], util.stringToPoints("45,54.3 23,43"));
+            assert.deepEqual(util.stringToPoints("45,54.3 23,43"), [{x:45,y:54.3},{x:23,y:43}]);
         });
         it("shouldn't get confused when an empty string is passed in - it should only return an empty array", function () {
-            assert.deepEqual([], util.stringToPoints(""));
+            assert.deepEqual(util.stringToPoints(""), []);
         });
         it("shouldn't get confused when undefined is passed in - it should only return an empty array", function () {
-            assert.deepEqual([], util.stringToPoints(undefined));
+            assert.deepEqual(util.stringToPoints(undefined), []);
         });
         it("should also handle negative numbers correctly", function () {
-            assert.deepEqual([{x:45,y:-54.4},{x:23,y:-43}], util.stringToPoints("45,-54.4 23,-43"));
+            assert.deepEqual(util.stringToPoints("45,-54.4 23,-43"), [{x:45,y:-54.4},{x:23,y:-43}]);
         });
     });
 
+    describe('processPolygonAsString', function() {
+        it('should return a processed string', function () {
+            assert(_.isString(util.processPolygonAsString("45,54.3 23,43", {})));
+            assert(_.startsWith(util.processPolygonAsString("45,54.3 23,43", {}), "45,54.3"));
+            assert(util.processPolygonAsString("45,54.3 23,43", {}).split(' ').length > 2);
+        });
+    });
 
     describe('isStraightLine', function() {
         it('should recognize a vertical line', function () {
