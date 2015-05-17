@@ -5,7 +5,7 @@
   "private": false,
   "main": "./bin/waggly-svg",
   "bin": {
-    "wagglyuml": "./bin/wsvg"
+    "wsvg": "./bin/wsvg"
   },
   "scripts": {
     "test": "mocha -R spec"
