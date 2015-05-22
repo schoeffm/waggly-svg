@@ -2,6 +2,14 @@
 
 var _ = require('lodash');
 
+var inchToPixel = function(value) {
+    return value * 96;
+};
+
+var pixelToInch = function(value) {
+    return value / 96;    
+};
+
 var distanceBetween = function(pointOne, pointTwo) {
     var px = pointTwo.x - pointOne.x;
     var py = pointTwo.y - pointOne.y;
@@ -12,10 +20,13 @@ var processPolygon = function(polygon, config) {
     var interval = config.wag_interval || 10;
     var size = config.wag_size || 1.5;
 
+    interval = (config.unit=== 'in') ? pixelToInch(interval) : interval;
+    size = (config.unit === 'in') ? pixelToInch(size) : size;
+
     var _perturb = function(x, y) {
         return {
             x: x + Math.random() * size,
-            y: y + Math.random() * size
+            y: y + Math.random() * size 
         };
     };
 
@@ -65,7 +76,7 @@ var processPolygonAsString = function(polygon, config) {
     return pointsToString(processPolygon(stringToPoints(polygon), config));
 };
 
-var stringToPoints = function(pointsAsString) {
+var stringToPoints = function(pointsAsString, unit) {
     if (_.isUndefined(pointsAsString) || _.isEmpty(pointsAsString)) return [];
 
     var input = pointsAsString;
@@ -122,6 +133,8 @@ var isStraightLine = function(pointsAsString) {
 
 
 module.exports.distanceBetween = distanceBetween;
+module.exports.inchToPixel = inchToPixel;
+module.exports.pixelToInch = pixelToInch;
 module.exports.processPolygon = processPolygon;
 module.exports.pointsToString = pointsToString;
 module.exports.stringToPoints = stringToPoints;

@@ -15,6 +15,7 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
     var testPathStraightDiagonal = '<ns0:path d="M245.84,-45C262.291,-45 280.343,-45 295.875,-45" fill="none" stroke="black"/>';
     var testRectangle = '<rect fill="none" stroke="#000000" stroke-opacity="1" stroke-width="1" x="366.47" y="-1002.365" width="135.06" height="36.296" rx="0.506" ry="0.506"/>';
     var testText = '<ns0:text font-family="Purisa" font-size="10.00" text-anchor="middle" x="42" y="-67.5">ICustomer</ns0:text>';
+    var testLine = '<line x1="1.685" y1="-0.75" x2="2.815" y2="-0.75" stroke-width="0.0094118"/>';
 
     describe('When wagging is turned off, it', function() {
         it('should create a pass-through object that returns the input-string unchanged', function(done) {
@@ -123,6 +124,19 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
                     done();
                 });
                 transformer.transformString(testRectangle);
+            });
+        });
+
+        describe('when exploring a "line"-node it ...', function() {
+            it('should change a line into a waggling polyline', function (done) {
+                var transformer = wagglySvg.create(config, function (result) {
+                    assert.notStrictEqual(result, testLine);
+                    assert(result.indexOf('polyline') >= 0);
+                    assert(result.indexOf('<line') < 0);
+                    assert.strictEqual(result.split(' ').length, 9);
+                    done();
+                });
+                transformer.transformString(testLine);
             });
         });
 
