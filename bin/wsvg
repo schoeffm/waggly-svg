@@ -12,7 +12,7 @@ var spawn = require('child_process').spawn;
 
 
 program
-    .version('0.0.4')
+    .version('0.0.7')
     .option('-p, --png', "Export to PNG")
     .option('-c, --content <content>', "SVG-content as string input")
     .option('-i, --input <path>', "Input SVG-File which should be turned into a waggly output-version")
