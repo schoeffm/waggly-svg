@@ -37,14 +37,6 @@ describe('wsvg bin', function(){
 		});
 	});
 	
-	it('--version should run without errors', function(done) {
-		exec(cmd+'--version', function (error, stdout, stderr) {
-			assert(!error);
-			assert.strictEqual(stdout, '0.0.7\n');
-			done();
-		});
-	});
-
 	it('should return error on missing command', function(done) {
         this.timeout(4000);
 

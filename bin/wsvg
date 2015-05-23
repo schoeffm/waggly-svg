@@ -9,10 +9,11 @@ var fs = require('fs');
 var util = require('util');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
+var pjson = require('../package.json');
 
 
 program
-    .version('0.0.7')
+    .version(pjson.version)
     .option('-p, --png', "Export to PNG")
     .option('-c, --content <content>', "SVG-content as string input")
     .option('-i, --input <path>', "Input SVG-File which should be turned into a waggly output-version")
