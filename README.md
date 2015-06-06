@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/schoeffm/waggly-svg.svg?branch=master)](https://travis-ci.org/schoeffm/waggly-svg)
+[![npm version](https://badge.fury.io/js/wsvg.svg)](http://badge.fury.io/js/wsvg)
 
 wsvg
 =============
@@ -116,5 +117,4 @@ Copyright (c) 2015 Stefan Schöffmann
 # Acknowledgments
 
 Granted, the idea is [not new](http://www.yuml.me/) - but since I'm absolutely no python guy I couldn't contribute to the excellent work of [Aivarsk](https://github.com/aivarsk)'s [Scruffy](https://github.com/aivarsk/scruffy) - but got heavily inspired by it. Based on his efforts this module was created.
-
 
