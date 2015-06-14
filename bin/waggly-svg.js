@@ -52,6 +52,7 @@ var WagglyTransformer = function(config, callback) {
             util.processPolygonAsString(getAttributeValue(attrs, 'points'), _.merge(self.config, context)) +
             "\" >";
     };
+    
     /**
      * <line x1="1.685" y1="-0.75" x2="2.815" y2="-0.75" stroke-width="0.0094118"/>
      */
@@ -113,31 +114,35 @@ var WagglyTransformer = function(config, callback) {
     var isVisible = function(attrs) {
         var stroke = getAttributeValue(attrs, 'stroke');
         return stroke !== 'none';
-    }
+    };
     
     var isPolyline = function(elem, attrs) {
         return isVisible(attrs) && (elem.toLowerCase() === 'polyline' || elem.toLowerCase() === 'polygon');            
-    }
+    };
     
     var isRectangle = function(elem, attrs) {
         return isVisible(attrs) && elem.toLocaleString() === 'rect';
-    }
+    };
     
     var isRootSVGElement = function(elem) {
         return elem.toLowerCase() === 'svg';
     };
     
     this.parser = new xmlParser.SaxParser(function(cb) {
-        var svgOutput;
+        var svgOutput = "";
         var changeClosingTagTo = '';
         var context = {};
 
         
-        cb.onStartDocument(function() { svgOutput = ""; });
-        cb.onEndDocument(function() { self.callback(svgOutput); });
+        cb.onStartDocument(function() {
+            svgOutput = ""; 
+        });
+        cb.onEndDocument(function() {
+            self.callback(svgOutput); 
+        });
 
         cb.onStartElementNS(function(elem, attrs, prefix, uri, namespaces) {
-
+            
             if (isRootSVGElement(elem)) {
                 context.unit = _.endsWith(getAttributeValue(attrs, 'width'),'in') ? 'in' : 'px';
             } 
@@ -149,11 +154,11 @@ var WagglyTransformer = function(config, callback) {
                 changeClosingTagTo = 'polyline';
             } else if (isRectangle(elem, attrs)) {
                 var result = transformRectangle(elem, attrs, prefix, namespaces, context);
-                if (result.indexOf(elem) < 0) { changeClosingTagTo = 'polygon'; }
+                changeClosingTagTo = 'polygon';
                 svgOutput += result;
             } else if (elem.toLowerCase() === 'path' ) {
                 var result = transformPath(elem, attrs, prefix, namespaces, context);
-                if (result.indexOf(elem) < 0) { changeClosingTagTo = 'polyline'; }
+                changeClosingTagTo = 'polyline';
                 svgOutput += result;
             } else if (elem.toLowerCase() === 'text' && self.config.font_family !== undefined)  {
                 svgOutput += transformText(elem, attrs, prefix, namespaces, context);
@@ -175,8 +180,8 @@ var WagglyTransformer = function(config, callback) {
         });
     });
 
-    this.transformString= function(string) {
-        this.parser.parseString(string);
+    this.transformString = function(toBeParsed) {
+        this.parser.parseString(toBeParsed);
     };
 
     this.transformFile= function(file) {
@@ -189,8 +194,8 @@ function EmptyTransformer(callback) {
     var self = this;
     this.callback = callback;
 
-    this.transformString = function(string) {
-        self.callback(string);
+    this.transformString = function(toBeParsed) {
+        self.callback(toBeParsed);
     };
 
     this.transformFile = function(file) {
