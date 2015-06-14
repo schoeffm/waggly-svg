@@ -93,6 +93,7 @@ describe("'waggly-svg' encapsulates the whole svg-transformation", function() {
         describe('when exploring a "path"-node it ...', function() {
             it('should change a straight horizontal path into a waggling polyline', function (done) {
                 var transformer = wagglySvg.create(config, function (result) {
+                    console.log(result);
                     assert.notStrictEqual(result, testPathStraightHorizontal);
                     assert(result.indexOf('polyline') >= 0);
                     assert(result.indexOf('path') < 0);

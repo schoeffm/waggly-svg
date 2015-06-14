@@ -14,7 +14,7 @@ var WagglyTransformer = function(config, callback) {
             return a += ((_.isEmpty(ns[0])) ? " xmlns" : " xmlns:" + ns[0]) + "=\"" + ns[1] + "\"";
         }, "");
     };
-    
+
     var toAttributes = function(attrs) {
         return _.reduce(attrs, function(a, at) {return a += " " + at[0] + "=\"" + at[1] + "\"";}, "");
     };
@@ -52,7 +52,7 @@ var WagglyTransformer = function(config, callback) {
             util.processPolygonAsString(getAttributeValue(attrs, 'points'), _.merge(self.config, context)) +
             "\" >";
     };
-    
+
     /**
      * <line x1="1.685" y1="-0.75" x2="2.815" y2="-0.75" stroke-width="0.0094118"/>
      */
@@ -63,7 +63,7 @@ var WagglyTransformer = function(config, callback) {
         var y2 = parseFloat(getAttributeValue(attrs, 'y2'));
 
         var points = [{x:x1, y:y1},{x:x2,y:y2}];
-        
+
         return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
             "polyline" +
             toNamespaces(namespaces) +
@@ -102,7 +102,7 @@ var WagglyTransformer = function(config, callback) {
                 " points=\"" +
                 util.pointsToString(util.processPolygon(points, _.merge(self.config, context))) +
                 "\" >";
-        } else { 
+        } else {
             return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
                 elem +
                 toNamespaces(namespaces) +
@@ -115,50 +115,50 @@ var WagglyTransformer = function(config, callback) {
         var stroke = getAttributeValue(attrs, 'stroke');
         return stroke !== 'none';
     };
-    
+
     var isPolyline = function(elem, attrs) {
-        return isVisible(attrs) && (elem.toLowerCase() === 'polyline' || elem.toLowerCase() === 'polygon');            
+        return isVisible(attrs) && (elem.toLowerCase() === 'polyline' || elem.toLowerCase() === 'polygon');
     };
-    
+
     var isRectangle = function(elem, attrs) {
         return isVisible(attrs) && elem.toLocaleString() === 'rect';
     };
-    
+
     var isRootSVGElement = function(elem) {
         return elem.toLowerCase() === 'svg';
     };
-    
+
     this.parser = new xmlParser.SaxParser(function(cb) {
         var svgOutput = "";
         var changeClosingTagTo = '';
         var context = {};
 
-        
+
         cb.onStartDocument(function() {
-            svgOutput = ""; 
+            svgOutput = "";
         });
         cb.onEndDocument(function() {
-            self.callback(svgOutput); 
+            self.callback(svgOutput);
         });
 
         cb.onStartElementNS(function(elem, attrs, prefix, uri, namespaces) {
-            
+
             if (isRootSVGElement(elem)) {
                 context.unit = _.endsWith(getAttributeValue(attrs, 'width'),'in') ? 'in' : 'px';
-            } 
-            
+            }
+
             if (isPolyline(elem, attrs)) {
                 svgOutput += transformPolyline(elem, attrs, prefix, namespaces, context);
             } else if (elem.toLowerCase() === 'line') {
                 svgOutput += transformLine(elem, attrs, prefix, namespaces, context);
-                changeClosingTagTo = 'polyline';
+                if (_.contains(result, 'polyline ')) { changeClosingTagTo = 'polyline'; }
             } else if (isRectangle(elem, attrs)) {
                 var result = transformRectangle(elem, attrs, prefix, namespaces, context);
-                changeClosingTagTo = 'polygon';
+                if (_.contains(result, 'polygon ')) { changeClosingTagTo = 'polygon'; }
                 svgOutput += result;
             } else if (elem.toLowerCase() === 'path' ) {
                 var result = transformPath(elem, attrs, prefix, namespaces, context);
-                changeClosingTagTo = 'polyline';
+                if (_.contains(result, 'polyline ')) { changeClosingTagTo = 'polyline'; }
                 svgOutput += result;
             } else if (elem.toLowerCase() === 'text' && self.config.font_family !== undefined)  {
                 svgOutput += transformText(elem, attrs, prefix, namespaces, context);
@@ -168,9 +168,9 @@ var WagglyTransformer = function(config, callback) {
         });
         cb.onEndElementNS(function(elem, prefix) {
             svgOutput += "</" +
-            (_.isEmpty(prefix) ? '' : prefix + ":") +
-            ((_.isEmpty(changeClosingTagTo)) ? elem : changeClosingTagTo) +
-            ">";
+                (_.isEmpty(prefix) ? '' : prefix + ":") +
+                ((_.isEmpty(changeClosingTagTo)) ? elem : changeClosingTagTo) +
+                ">";
             changeClosingTagTo = '';
         });
         cb.onCharacters(function(chars) {
