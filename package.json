@@ -1,6 +1,6 @@
 {
   "name": "wsvg",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A CLI tool in order to turn SVG input files into hand-drawn looking counterparts",
   "private": false,
   "main": "./bin/waggly-svg",
