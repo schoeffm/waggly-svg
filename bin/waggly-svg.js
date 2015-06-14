@@ -151,7 +151,7 @@ var WagglyTransformer = function(config, callback) {
                 svgOutput += transformPolyline(elem, attrs, prefix, namespaces, context);
             } else if (elem.toLowerCase() === 'line') {
                 svgOutput += transformLine(elem, attrs, prefix, namespaces, context);
-                if (_.contains(result, 'polyline ')) { changeClosingTagTo = 'polyline'; }
+                changeClosingTagTo = 'polyline';
             } else if (isRectangle(elem, attrs)) {
                 var result = transformRectangle(elem, attrs, prefix, namespaces, context);
                 if (_.contains(result, 'polygon ')) { changeClosingTagTo = 'polygon'; }
