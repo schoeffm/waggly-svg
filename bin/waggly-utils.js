@@ -20,6 +20,8 @@ var processPolygon = function(polygon, config) {
     var interval = config.wag_interval || 10;
     var size = config.wag_size || 1.5;
 
+    interval = (interval !== 0) ? interval : 10; // make sure we're positive
+    
     interval = (config.unit=== 'in') ? pixelToInch(interval) : interval;
     size = (config.unit === 'in') ? pixelToInch(size) : size;
 
