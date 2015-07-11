@@ -108,6 +108,10 @@ var stringToPoints = function(pointsAsString, unit) {
  * @returns {boolean}
  */
 var isStraightLine = function(pointsAsString) {
+    if (_.includes(pointsAsString.toLowerCase(), 'a') ||    // arcs are no straight lines
+        _.includes(pointsAsString.toLowerCase(), 'q')) {    // quadratic bézier neither 
+        return false;
+    }
     var points = stringToPoints(pointsAsString);
     var start = points[0];
     var end = points[points.length - 1];
