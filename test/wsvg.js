@@ -5,13 +5,13 @@ var exec = require('child_process').exec;
 var path = require('path');
 
 describe('wsvg bin', function(){
-	var cmd = 'node '+path.join(__dirname, '../bin/wsvg')+' ';
+	var cmd = 'node ' + path.join(__dirname, '../bin/wsvg') + ' ';
 	console.log(cmd);
 
 	it('--help should run without errors', function(done) {
-		exec(cmd+'--help', function (error, stdout, stderr) {
+		exec(cmd + '--help', function (error, stdout, stderr) {
 			assert(!error);
-			assert(stdout.indexOf('Usage: wsvg') > 0);
+			assert(stdout.indexOf('Usage: wsvg') >= 0);
 			done();
 		});
 	});
@@ -36,7 +36,7 @@ describe('wsvg bin', function(){
 			done();
 		});
 	});
-	
+
 	it('should return error on missing command', function(done) {
         this.timeout(4000);
 

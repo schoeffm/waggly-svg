@@ -1,176 +1,143 @@
 'use strict';
-var _ = require('lodash');
-var xmlParser = require('node-xml');
-var fs = require('fs');
-var util = require('./waggly-utils');
+const _ = require('lodash');
+const xmlParser = require('node-xml');
+const fs = require('fs');
+const util = require('./waggly-utils');
 
-var WagglyTransformer = function(config, callback) {
-    var self = this;
+const WagglyTransformer = function(config, callback) {
+    const self = this;
     this.callback = callback;
     this.config = config;
 
-    var toNamespaces = function(namespaces) {
-        return _.reduce(namespaces, function(a, ns) {
-            return a += ((_.isEmpty(ns[0])) ? " xmlns" : " xmlns:" + ns[0]) + "=\"" + ns[1] + "\"";
-        }, "");
-    };
+    const toNamespaces = (namespaces) =>
+        _.reduce(namespaces, (a, ns) =>
+            a += ((_.isEmpty(ns[0])) ? ' xmlns' : ` xmlns:${ns[0]}`) + `="${ns[1]}"`, '');
 
-    var toAttributes = function(attrs) {
-        return _.reduce(attrs, function(a, at) {return a += " " + at[0] + "=\"" + at[1] + "\"";}, "");
-    };
+    const toAttributes = (attrs) => _.reduce(attrs, function(a, at) {return a += ` ${at[0]}="${at[1]}"`;}, '');
 
     /**
      * @param attrs
-     * @param exception ...
      */
-    var toAttributesExcept = function(attrs, exception) { //TODO: varargs und überflüssige Attribute weglassen (rect)
+    const toAttributesExcept = function(attrs) {
         var exceptions = _.drop(arguments);
         return toAttributes(_.filter(attrs, function(element) { return ! _.includes(exceptions, element[0]); }));
     };
 
-    var getAttributeValue = function(attrs, needle) {
-        var foundElement = _.find(attrs, function(element) { return element[0] === needle });
+    const getAttributeValue = function(attrs, needle) {
+        var foundElement = _.find(attrs, function(element) { return element[0] === needle; });
         return (foundElement) ? foundElement[1] : undefined;
     };
 
-    var transformText = function(elem, attrs, prefix, namespaces, context) {
-        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
-            elem +
-            toNamespaces(namespaces) +
-            toAttributesExcept(attrs, 'font-family', 'font-size') +
-            " font-family=\"" + self.config.font_family + "\" font-size=\"" +
-            ((self.config.font_size) ? self.config.font_size : "10") +
-            "\" >";
+    const transformText = function(elem, attrs, prefix, namespaces) {
+        return `<${(_.isEmpty(prefix) ? '' : prefix + ':')}` +
+            `${elem}${toNamespaces(namespaces)}` +
+            `${toAttributesExcept(attrs, 'font-family', 'font-size')} ` +
+            `font-family="${self.config.font_family}" ` +
+            `font-size="${(self.config.font_size) ? self.config.font_size : '10'}" >`;
     };
 
-    var transformPolyline = function(elem, attrs, prefix, namespaces, context) {
-        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
-            elem +
-            toNamespaces(namespaces) +
-            toAttributesExcept(attrs, 'points') +
-            " points=\"" +
-            util.processPolygonAsString(getAttributeValue(attrs, 'points'), _.merge(self.config, context)) +
-            "\" >";
+    const transformPolyline = function(elem, attrs, prefix, namespaces, context) {
+        return `<${_.isEmpty(prefix) ? '' : prefix + ':'}` +
+            `${elem}${toNamespaces(namespaces)}${toAttributesExcept(attrs, 'points')} ` +
+            `points="${util.processPolygonAsString(getAttributeValue(attrs, 'points'), _.merge(self.config, context))}" >`;
     };
 
     /**
      * <line x1="1.685" y1="-0.75" x2="2.815" y2="-0.75" stroke-width="0.0094118"/>
      */
-    var transformLine = function(elem, attrs, prefix, namespaces, context) {
-        var x1 = parseFloat(getAttributeValue(attrs, 'x1'));
-        var y1 = parseFloat(getAttributeValue(attrs, 'y1'));
-        var x2 = parseFloat(getAttributeValue(attrs, 'x2'));
-        var y2 = parseFloat(getAttributeValue(attrs, 'y2'));
+    const transformLine = function(elem, attrs, prefix, namespaces, context) {
+        const x1 = parseFloat(getAttributeValue(attrs, 'x1'));
+        const y1 = parseFloat(getAttributeValue(attrs, 'y1'));
+        const x2 = parseFloat(getAttributeValue(attrs, 'x2'));
+        const y2 = parseFloat(getAttributeValue(attrs, 'y2'));
 
-        var points = [{x:x1, y:y1},{x:x2,y:y2}];
+        const points = [{x:x1, y:y1},{x:x2,y:y2}];
 
-        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
-            "polyline" +
-            toNamespaces(namespaces) +
-            toAttributesExcept(attrs, 'points') +
-            " points=\"" +
-            util.pointsToString(util.processPolygon(points, _.merge(self.config, context))) +
-            "\" >";
+        return `<${_.isEmpty(prefix) ? '' : prefix + ':'}` +
+            `polyline${toNamespaces(namespaces)}${toAttributesExcept(attrs, 'points')}` +
+            ` points="${util.pointsToString(util.processPolygon(points, _.merge(self.config, context)))}" >`;
     };
 
-    var transformRectangle = function(elem, attrs, prefix, namespaces, context) {
-        var x = parseFloat(getAttributeValue(attrs, 'x'));
-        var y = parseFloat(getAttributeValue(attrs, 'y'));
-        var width = parseFloat(getAttributeValue(attrs, 'width'));
-        var height = parseFloat(getAttributeValue(attrs, 'height'));
+    const transformRectangle = function(elem, attrs, prefix, namespaces, context) {
+        const x = parseFloat(getAttributeValue(attrs, 'x'));
+        const y = parseFloat(getAttributeValue(attrs, 'y'));
+        const width = parseFloat(getAttributeValue(attrs, 'width'));
+        const height = parseFloat(getAttributeValue(attrs, 'height'));
 
-        var points = [{x:x, y:y},{x:x+width,y:y},{x:x+width,y:y+height},{x:x,y:y+height}];
-        return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
-            "polygon" +
-            toNamespaces(namespaces) +
-            toAttributesExcept(attrs, 'd') +
-            " points=\"" +
-            util.pointsToString(util.processPolygon(points, _.merge(self.config, context))) +
-            "\" >";
-
+        const points = [{x:x, y:y},{x:x+width,y:y},{x:x+width,y:y+height},{x:x,y:y+height}];
+        return `<${_.isEmpty(prefix) ? '' : prefix + ':'}` +
+            `polygon${toNamespaces(namespaces)}${toAttributesExcept(attrs, 'd')}` +
+            ` points="${util.pointsToString(util.processPolygon(points, _.merge(self.config, context)))}" >`;
     };
 
-    var transformPath = function(elem, attrs, prefix, namespaces, context) {
-        var path = getAttributeValue(attrs, 'd');
+    const transformPath = function(elem, attrs, prefix, namespaces, context) {
+        const path = getAttributeValue(attrs, 'd');
         if (util.isStraightLine(path)) {
-            var cleared = _.trim(path.replace('M',' ').replace('C',' '));
-            var points = util.stringToPoints(cleared, context.unit);
-            return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
-                "polyline" +
-                toNamespaces(namespaces) +
-                toAttributesExcept(attrs, 'd') +
-                " points=\"" +
-                util.pointsToString(util.processPolygon(points, _.merge(self.config, context))) +
-                "\" >";
+            const cleared = _.trim(path.replace('M',' ').replace('C',' '));
+            const points = util.stringToPoints(cleared, context.unit);
+            return `<${_.isEmpty(prefix) ? '' : prefix + ':'}` +
+                `polyline${toNamespaces(namespaces)}${toAttributesExcept(attrs, 'd')}` +
+                ` points="${util.pointsToString(util.processPolygon(points, _.merge(self.config, context)))}" >`;
         } else {
-            return "<" + (_.isEmpty(prefix) ? '' : prefix + ":") +
-                elem +
-                toNamespaces(namespaces) +
-                toAttributes(attrs) +
-                " >";
+            return `<${_.isEmpty(prefix) ? '' : prefix + ':'}` +
+                `${elem}${toNamespaces(namespaces)}${toAttributes(attrs)} >`;
         }
     };
 
-    var isVisible = function(attrs) {
-        var stroke = getAttributeValue(attrs, 'stroke');
+    const isVisible = function(attrs) {
+        const stroke = getAttributeValue(attrs, 'stroke');
         return stroke !== 'none';
     };
 
-    var isPolyline = function(elem, attrs) {
+    const isPolyline = function(elem, attrs) {
         return isVisible(attrs) && (elem.toLowerCase() === 'polyline' || elem.toLowerCase() === 'polygon');
     };
 
-    var isRectangle = function(elem, attrs) {
+    const isRectangle = function(elem, attrs) {
         return isVisible(attrs) && elem.toLocaleString() === 'rect';
     };
 
-    var isRootSVGElement = function(elem) {
+    const isRootSVGElement = function(elem) {
         return elem.toLowerCase() === 'svg';
     };
 
     this.parser = new xmlParser.SaxParser(function(cb) {
-        var svgOutput = "";
-        var changeClosingTagTo = '';
-        var context = {};
-
+        let svgOutput = '';
+        let changeClosingTagTo = '';
+        let context = {};
 
         cb.onStartDocument(function() {
-            svgOutput = "";
+            svgOutput = '';
         });
         cb.onEndDocument(function() {
             self.callback(svgOutput);
         });
 
         cb.onStartElementNS(function(elem, attrs, prefix, uri, namespaces) {
-
             if (isRootSVGElement(elem)) {
                 context.unit = _.endsWith(getAttributeValue(attrs, 'width'),'in') ? 'in' : 'px';
             }
-
             if (isPolyline(elem, attrs)) {
                 svgOutput += transformPolyline(elem, attrs, prefix, namespaces, context);
             } else if (elem.toLowerCase() === 'line') {
                 svgOutput += transformLine(elem, attrs, prefix, namespaces, context);
                 changeClosingTagTo = 'polyline';
             } else if (isRectangle(elem, attrs)) {
-                var result = transformRectangle(elem, attrs, prefix, namespaces, context);
-                if (_.contains(result, 'polygon ')) { changeClosingTagTo = 'polygon'; }
+                const result = transformRectangle(elem, attrs, prefix, namespaces, context);
+                if (_.includes(result, 'polygon ')) { changeClosingTagTo = 'polygon'; }
                 svgOutput += result;
             } else if (elem.toLowerCase() === 'path' ) {
-                var result = transformPath(elem, attrs, prefix, namespaces, context);
-                if (_.contains(result, 'polyline ')) { changeClosingTagTo = 'polyline'; }
+                const result = transformPath(elem, attrs, prefix, namespaces, context);
+                if (_.includes(result, 'polyline ')) { changeClosingTagTo = 'polyline'; }
                 svgOutput += result;
             } else if (elem.toLowerCase() === 'text' && self.config.font_family !== undefined)  {
                 svgOutput += transformText(elem, attrs, prefix, namespaces, context);
             } else {
-                svgOutput +="<" + (_.isEmpty(prefix) ? '' : prefix + ":") + elem + toNamespaces(namespaces) + toAttributes(attrs) + ">";
+                svgOutput += `<${_.isEmpty(prefix) ? '' : prefix + ':'}${elem}${toNamespaces(namespaces)}${toAttributes(attrs)}>`;
             }
         });
         cb.onEndElementNS(function(elem, prefix) {
-            svgOutput += "</" +
-                (_.isEmpty(prefix) ? '' : prefix + ":") +
-                ((_.isEmpty(changeClosingTagTo)) ? elem : changeClosingTagTo) +
-                ">";
+            svgOutput += `</${_.isEmpty(prefix) ? '' : prefix + ':'}${_.isEmpty(changeClosingTagTo) ? elem : changeClosingTagTo}>`;
             changeClosingTagTo = '';
         });
         cb.onCharacters(function(chars) {
@@ -191,7 +158,7 @@ var WagglyTransformer = function(config, callback) {
 
 
 function EmptyTransformer(callback) {
-    var self = this;
+    const self = this;
     this.callback = callback;
 
     this.transformString = function(toBeParsed) {
@@ -200,10 +167,10 @@ function EmptyTransformer(callback) {
 
     this.transformFile = function(file) {
         return fs.readFile(file, 'UTF-8', function(err, data) {
-            if (err) throw err;
+            if (err) { throw err; }
             self.callback(data);
         });
-    }
+    };
 }
 
 /**

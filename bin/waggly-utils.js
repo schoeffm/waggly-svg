@@ -1,57 +1,76 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var inchToPixel = function(value) {
-    return value * 96;
-};
+const inchToPixel = (value) => value * 96;
 
-var pixelToInch = function(value) {
-    return value / 96;    
-};
+const pixelToInch = (value) => value / 96;
 
-var distanceBetween = function(pointOne, pointTwo) {
-    var px = pointTwo.x - pointOne.x;
-    var py = pointTwo.y - pointOne.y;
+const distanceBetween = (pointOne, pointTwo) => {
+    const px = pointTwo.x - pointOne.x;
+    const py = pointTwo.y - pointOne.y;
     return Math.sqrt(px * px + py * py);
 };
 
-var processPolygon = function(polygon, config) {
-    var interval = config.wag_interval || 10;
-    var size = config.wag_size || 1.5;
+const stringToPoints = function(pointsAsString) {
+    if (_.isUndefined(pointsAsString) || _.isEmpty(pointsAsString)) { return []; }
+
+    let input = pointsAsString;
+
+    if (input.indexOf(',') >= 0) {
+        // some SVG's don't separate their point-coordinates with ','
+        // For those that do we have to remove 'em
+        input = input.replace(/,/g,' ');
+    }
+
+    const points = _.trim(input.replace(/[A-Za-z]/g,' ')).split(/\s+/);
+
+    const result = [];
+    for (let i = 0; i < points.length; i=i+2) {
+        result.push({
+            x: parseFloat(points[i]),
+            y: parseFloat(points[i+1])
+        });
+    }
+    return result;
+};
+
+const processPolygon = function(polygon, config) {
+    let interval = config.wag_interval || 10;
+    let size = config.wag_size || 1.5;
 
     interval = (interval !== 0) ? interval : 10; // make sure we're positive
-    
+
     interval = (config.unit=== 'in') ? pixelToInch(interval) : interval;
     size = (config.unit === 'in') ? pixelToInch(size) : size;
 
-    var _perturb = function(x, y) {
+    const _perturb = function(x, y) {
         return {
             x: x + Math.random() * size,
-            y: y + Math.random() * size 
+            y: y + Math.random() * size
         };
     };
 
-    var input = (_.isString(polygon)) ? stringToPoints(polygon) : polygon;
+    const input = (_.isString(polygon)) ? stringToPoints(polygon) : polygon;
 
-    var processedPolygon = [];
-    var prev = input[0];
+    let processedPolygon = [];
+    let prev = input[0];
 
     processedPolygon.push(input[0]);    // push the start-point - no wobble on that
 
-    for (var i = 1; i < input.length; ++i) {
-        var nextPoint = input[i];
-        var dist = distanceBetween(prev, nextPoint);
+    for (let i = 1; i < input.length; ++i) {
+        const nextPoint = input[i];
+        const dist = distanceBetween(prev, nextPoint);
 
         if (dist > interval) {
-            var stepCount = Math.floor ( dist / interval);
+            const stepCount = Math.floor ( dist / interval);
 
-            var x  = prev.x;
-            var y  = prev.y;
-            var dx = ( nextPoint.x - prev.x ) / stepCount;
-            var dy = ( nextPoint.y - prev.y ) / stepCount;
+            let x  = prev.x;
+            let y  = prev.y;
+            const dx = ( nextPoint.x - prev.x ) / stepCount;
+            const dy = ( nextPoint.y - prev.y ) / stepCount;
 
-            for ( var count = 1; count < stepCount; ++count ) {
+            for ( let count = 1; count < stepCount; ++count ) {
                 x += dx;
                 y += dy;
 
@@ -64,41 +83,18 @@ var processPolygon = function(polygon, config) {
     return processedPolygon;
 };
 
-var pointsToString = function(points) {
-    if (points === undefined) return "";
+const pointsToString = function(points) {
+    if (points === undefined) { return ''; }
     return _.trim(
             _.reduce(
-                _.map(points, function(p) {return p.x + "," + p.y }), 
-                function(acc, elem) { return acc += " " + elem }, 
-                "")
+                _.map(points, function(p) {return p.x + ',' + p.y; }),
+                function(acc, elem) { return acc += ' ' + elem; },
+                '')
     );
 };
 
-var processPolygonAsString = function(polygon, config) {
+const processPolygonAsString = function(polygon, config) {
     return pointsToString(processPolygon(stringToPoints(polygon), config));
-};
-
-var stringToPoints = function(pointsAsString, unit) {
-    if (_.isUndefined(pointsAsString) || _.isEmpty(pointsAsString)) return [];
-
-    var input = pointsAsString;
-
-    if (input.indexOf(',') >= 0) {
-        // some SVG's don't separate their point-coordinates with ','
-        // For those that do we have to remove 'em
-        input = input.replace(/,/g,' ')
-    }
-
-    var points = _.trim(input.replace(/[A-Za-z]/g,' ')).split(/\s+/);
-
-    var result = [];
-    for (var i = 0; i < points.length; i=i+2) {
-        result.push({
-            x: parseFloat(points[i]),
-            y: parseFloat(points[i+1])
-        })
-    }
-    return result;
 };
 
 /**
@@ -107,36 +103,34 @@ var stringToPoints = function(pointsAsString, unit) {
  * @param pointsAsString
  * @returns {boolean}
  */
-var isStraightLine = function(pointsAsString) {
+const isStraightLine = function(pointsAsString) {
     if (_.includes(pointsAsString.toLowerCase(), 'a') ||    // arcs are no straight lines
-        _.includes(pointsAsString.toLowerCase(), 'q')) {    // quadratic bézier neither 
+        _.includes(pointsAsString.toLowerCase(), 'q')) {    // quadratic bézier neither
         return false;
     }
-    var points = stringToPoints(pointsAsString);
-    var start = points[0];
-    var end = points[points.length - 1];
-    var pointsBetween = _.dropRight(_.drop(points));
+    const points = stringToPoints(pointsAsString);
+    const start = points[0];
+    const end = points[points.length - 1];
+    const pointsBetween = _.dropRight(_.drop(points));
 
-    var epsilon = 0.1;
+    const epsilon = 0.1;
 
-    var result = true;
-
-    for (var i = 0; i < pointsBetween.length && result; i++) {
-        var point = pointsBetween[i];
-        var crossProduct = (point.y - start.y) * (end.x - start.x) - (point.x - start.x) * (end.y - start.y);
+    let result = true;
+    for (let i = 0; i < pointsBetween.length && result; i++) {
+        const point = pointsBetween[i];
+        const crossProduct = (point.y - start.y) * (end.x - start.x) - (point.x - start.x) * (end.y - start.y);
         if (Math.abs(crossProduct) > epsilon) { result = result && false; }
 
-        var dotProduct = (point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y);
+        const dotProduct = (point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y);
         if (dotProduct < 0) { result = result && false; }
 
-        var squaredLengthBa = (end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y);
+        const squaredLengthBa = (end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y);
         if (dotProduct > squaredLengthBa) { result = result && false; }
 
         result = result && true;
     }
     return result;
 };
-
 
 module.exports.distanceBetween = distanceBetween;
 module.exports.inchToPixel = inchToPixel;
