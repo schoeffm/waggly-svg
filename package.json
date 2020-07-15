@@ -24,7 +24,7 @@
   "dependencies": {
     "commander": "2.20.0",
     "graphviz": "0.0.9",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "node-xml": "1.0.2"
   },
   "devDependencies": {
